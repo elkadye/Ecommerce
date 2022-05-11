@@ -31,3 +31,44 @@ export type Navigation = {
   categories: Category[]
   pages: Page[]
 }
+  export interface GProduct {
+    id: string
+    name: string
+    category_id: string
+    href: string
+    description: string
+    details: string
+    trending: string
+  }
+
+  export interface GProductsImage {
+    ID: string
+    Product_ID: string
+    imageSrc: string
+    imageAlt: string
+    main: string
+    variant_id: string
+  }
+
+  export interface GProductsVariant {
+    id: string
+    product_id: string
+    color: string
+    size: string
+    price: string
+    qty: string
+  }
+
+  export interface GCategory {
+    id: string
+    name: string
+    featured: string
+  }
+
+  export interface SheetsData {
+    Products: GProduct[]
+    Products_images: GProductsImage[]
+    Products_variant: GProductsVariant[]
+    Categories: GCategory[]
+  }
+
