@@ -35,7 +35,7 @@ export type Navigation = {
     id: string
     name: string
     category_id: string
-    href: string
+    slug: string
     description: string
     details: string
     trending: boolean
@@ -100,7 +100,7 @@ export type Navigation = {
     id: string
     name: string
     category_id: string
-    href: string
+    slug: string
     description: string
     details: string
     trending: boolean
