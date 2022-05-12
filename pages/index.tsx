@@ -3,6 +3,7 @@ import Layout from 'components/layout'
 import useSWR from 'swr'
 import axios from 'axios'
 import { RootProduct } from 'types'
+import Link from 'next/link'
 
 const collections = [
   {
@@ -200,7 +201,8 @@ const Home: NextPage = () => {
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
-                {data?.filter((product: RootProduct) => product.trending)
+                {data
+                  ?.filter((product: RootProduct) => product.trending)
                   .map((product: RootProduct) => (
                     <div key={product.id} className="group relative">
                       <div className="h-56 w-full overflow-hidden rounded-md group-hover:opacity-75 lg:h-72 xl:h-80">
@@ -211,10 +213,9 @@ const Home: NextPage = () => {
                         />
                       </div>
                       <h3 className="mt-4 text-sm text-gray-700">
-                        <a href={product.slug}>
-                          <span className="absolute inset-0" />
-                          {product.name}
-                        </a>
+                        <Link href={'/product/'+ product.slug}>
+                          <a>{product.name}</a>
+                        </Link>
                       </h3>
                       {/* <p className="mt-1 text-sm text-gray-500">
                         {product.color}
