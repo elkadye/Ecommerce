@@ -38,7 +38,7 @@ export type Navigation = {
     href: string
     description: string
     details: string
-    trending: string
+    trending: boolean
   }
 
   export interface GProductsImage {
@@ -71,4 +71,42 @@ export type Navigation = {
     Products_variant: GProductsVariant[]
     Categories: GCategory[]
   }
+
+  export interface ProductCategory {
+    id: string
+    name: string
+    featured: string
+  }
+
+  export interface ProductImage {
+    ID: string
+    Product_ID: string
+    imageSrc: string
+    imageAlt: string
+    main: string
+    variant_id: string
+  }
+
+  export interface ProductVariant {
+    id: string
+    product_id: string
+    color: string
+    size: string
+    price: string
+    qty: string
+  }
+
+  export interface RootProduct {
+    id: string
+    name: string
+    category_id: string
+    href: string
+    description: string
+    details: string
+    trending: boolean
+    product_category: ProductCategory
+    product_images: ProductImage[]
+    product_variant: ProductVariant[]
+  }
+
 

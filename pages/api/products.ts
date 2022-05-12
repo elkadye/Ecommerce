@@ -28,11 +28,12 @@ export default function handler(
         const product_variant = data.Products_variant.filter((variant) => variant.product_id === product.id)
         const product_category = data.Categories.find((category) => category.id === product.category_id)
 
-        return{
+        return {
           ...product,
+          trending: (product.trending + '').toLowerCase() === 'true',
           product_category,
           product_images,
-          product_variant
+          product_variant,
         }
       }
         )
