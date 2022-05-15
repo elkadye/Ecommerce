@@ -5,8 +5,10 @@ import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CartItem, Product } from 'types'
 import Dropdown from './dropdown'
-
-const cart: CartItem[] = [
+import { useEffect } from 'react'
+import Link from 'next/link'
+import {removeCartItem} from '../redux/reducers/app'
+const staticcart: CartItem[] = [
   {
     id: 1,
     name: 'Throwback Hip Bag',
@@ -80,10 +82,16 @@ type props = {
   setOpen: (open: boolean) => void
 }
 
-
 export default function ShoppingCartDrawer({ open, setOpen }: props) {
-   const cartItems: CartItem[] = useSelector((state: any) => state.cartItems)
-  console.log(cartItems)
+  const cart: CartItem[] = useSelector((state: any) => state.app.cart)
+const dispatch= useDispatch()
+
+  const cartTotal = cart.reduce((accumulator, object) => {
+    return accumulator + +object.quantity * +object.product_variant[0].price
+  }, 0)
+  console.log(JSON.stringify(cart))
+  console.log(cartTotal)
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -141,8 +149,8 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
                               <li key={product.id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
-                                    src={product.imageSrc}
-                                    alt={product.imageAlt}
+                                    src={product.product_images[0].imageSrc}
+                                    alt={product.product_images[0].imageAlt}
                                     className="h-full w-full object-cover object-center"
                                   />
                                 </div>
@@ -151,15 +159,21 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
                                   <div>
                                     <div className="flex justify-between text-base font-medium text-gray-900">
                                       <h3>
-                                        <a href={product.href}>
-                                          {' '}
-                                          {product.name}{' '}
-                                        </a>
+                                        <Link href={'/product/' + product.slug}>
+                                          <a onClick={() => setOpen(false)}>
+                                            {product.name}
+                                          </a>
+                                        </Link>
                                       </h3>
-                                      <p className="ml-4">{product.price}</p>
+                                      <p className="ml-4">
+                                        {product.product_variant[0].price}
+                                      </p>
                                     </div>
                                     <p className="mt-1 text-sm text-gray-500">
-                                      {product.color}
+                                      {product.quantity}
+                                    </p>
+                                    <p className="mt-1 text-sm text-gray-500">
+                                      {product.product_variant[0].color}
                                     </p>
                                   </div>
                                   <div className="flex flex-1 items-end justify-between text-sm">
@@ -169,7 +183,7 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
                                           console.log('hello world')
                                         }}
                                         values={Array.from(
-                                          Array(product.availableQty),
+                                          Array(product.product_variant[0].qty),
                                           (_, i) => i + 1
                                         )}
                                       />
@@ -179,6 +193,7 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
                                       <button
                                         type="button"
                                         className="font-medium text-indigo-600 hover:text-indigo-500"
+                                        onClick={()=>dispatch(removeCartItem(product))}
                                       >
                                         Remove
                                       </button>
@@ -195,7 +210,7 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
                     <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Subtotal</p>
-                        <p>$262.00</p>
+                        <p>{cartTotal}</p>
                       </div>
                       <p className="mt-0.5 text-sm text-gray-500">
                         Shipping and taxes calculated at checkout.
@@ -211,14 +226,22 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
                       <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                         <p>
                           or{' '}
-                          <button
+                          <Link href="/">
+                            <a
+                              className="font-medium text-indigo-600 hover:text-indigo-500"
+                              onClick={() => setOpen(false)}
+                            >
+                              Continue Shopping
+                            </a>
+                          </Link>
+                          {/* <button
                             type="button"
                             className="font-medium text-indigo-600 hover:text-indigo-500"
                             onClick={() => setOpen(false)}
                           >
                             Continue Shopping
                             <span aria-hidden="true"> &rarr;</span>
-                          </button>
+                          </button> */}
                         </p>
                       </div>
                     </div>

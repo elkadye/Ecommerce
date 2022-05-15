@@ -11,7 +11,7 @@ export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setProducts:(state, { payload }: { payload: Product[] }) =>{
+    setProducts: (state, { payload }: { payload: Product[] }) => {
       state.products = payload
     },
     setCategories(state, { payload }: { payload: Category[] }) {
@@ -21,27 +21,32 @@ export const appSlice = createSlice({
       state.cart = payload
     },
     changeCartQty(state, { payload }: { payload: CartItem }) {
-      if(state.cart.length<1){
+      if (state.cart.length < 1) {
         state.cart.push(payload)
-        console.log("first")
+        console.log('first')
         console.log(JSON.stringify(state.cart))
-      }else{
-        const item=state.cart.find((item)=>item.slug==payload.slug)
-        if(!item){
+      } else {
+        const item = state.cart.find((item) => item.slug == payload.slug)
+        if (!item) {
           state.cart.push(payload)
-        }else{
-          item.quantity+=payload.quantity
-          if(item.quantity<1){
-           state.cart= state.cart.filter((i) => i.slug !== item.slug)
-           console.log('push')
+        } else {
+          item.quantity += payload.quantity
+          if (item.quantity < 1) {
+            state.cart = state.cart.filter((i) => i.slug !== item.slug)
+            console.log('push')
           }
         }
       }
       console.log(JSON.stringify(state.cart))
     },
+    removeCartItem(state, { payload }: { payload: CartItem }) {
+      state.cart = state.cart.filter((item)=>item.slug !== payload.slug)
+
+    },
   },
 })
 
-export const { setProducts, setCategories, setCart, changeCartQty } = appSlice.actions
+export const { setProducts, setCategories, setCart, changeCartQty, removeCartItem } =
+  appSlice.actions
 
 export default appSlice.reducer

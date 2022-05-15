@@ -116,9 +116,9 @@ export default function ProductPage() {
     return <div> waiting for data</div>
   }
   const product: RootProduct = data
-  console.log(slug)
-  console.log(data)
-  console.log(product.product_images[0].imageSrc)
+  // console.log(slug)
+  // console.log(data)
+  // console.log(product.product_images[0].imageSrc)
   // const [open, setOpen] = useState(false)
   // const [selectedColor, setSelectedColor] = useState(product.colors[0])
   // const [selectedSize, setSelectedSize] = useState(product.sizes[2])
@@ -128,9 +128,9 @@ function addCartItem(){
     ...product,
     quantity
   }
-console.log(payload)
+// console.log(payload)
 dispatch(changeCartQty(payload))
-console.log(cart)
+// console.log(cart)
 }
   return (
     <Layout>
@@ -138,8 +138,11 @@ console.log(cart)
         {/* Image gallery */}
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
           {product.product_images.map((image) => (
-            <div className="aspect-w-3 aspect-h-4 hidden overflow-hidden rounded-lg lg:block">
-              <img key={image.ID} src={image.imageSrc} alt={image.imageAlt} />
+            <div
+              key={image.ID}
+              className="aspect-w-3 aspect-h-4 hidden overflow-hidden rounded-lg lg:block"
+            >
+              <img src={image.imageSrc} alt={image.imageAlt} />
 
               {/* <img
               src={product.product_images[0].imageSrc}
@@ -191,13 +194,13 @@ console.log(cart)
                 </h3>
                 <div className="mt-4">
                   {/* <form className="mt-10"> */}
-                    <button
-                      // type="submit"
-                      onClick={() =>addCartItem()}
-                      className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      Add to bag
-                    </button>
+                  <button
+                    // type="submit"
+                    onClick={() => addCartItem()}
+                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    Add to bag
+                  </button>
                   {/* </form> */}
                 </div>
               </div>

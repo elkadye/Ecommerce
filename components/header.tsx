@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import Drawer from './drawer'
 import ShoppingCartDrawer from './shoppingCartDrawer'
 import { CartItem, Product } from 'types'
+import Link from 'next/link'
 
 const navigation = {
   categories: [
@@ -90,24 +91,23 @@ const navigation = {
 }
 
 function Header() {
-  const cartItems: CartItem[] = useSelector((state: any) => state.cart)
-  let badgeCount = 0
+  const cartItems: CartItem[] = useSelector((state: any) => state.app.cart)
+  const [badgeCount, setBadgeCount] = useState(0)
   useEffect(() => {
     if (cartItems) {
-      badgeCount = cartItems.reduce((accumulator, object) => {
+      setBadgeCount (cartItems.reduce((accumulator, object) => {
         return accumulator + object.quantity
-      }, 0)
+      }, 0))
     }
     console.log(badgeCount)
-    console.log(JSON.stringify(cartItems))
   }, [cartItems])
 
   const [open, setOpen] = useState(false)
   const [openShoppingCart, setOpenShoppingCart] = useState(false)
   console.log(badgeCount)
-  if (cartItems) {
-    console.log(JSON.stringify(cartItems))
-  }
+  // if (cartItems) {
+  //   console.log(JSON.stringify(cartItems))
+  // }
   return (
     <>
       <Drawer open={open} setOpen={setOpen} />
@@ -124,14 +124,19 @@ function Header() {
               <div className="flex h-16 items-center justify-between">
                 {/* Logo (lg+) */}
                 <div className="hidden lg:flex lg:flex-1 lg:items-center">
-                  <a href="#">
+                  <Link href="/">
+                    <a>
+                      ttt
+                      <img
+                        className="h-8 w-auto"
+                        src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
+                        alt=""
+                      />
+                    </a>
+                  </Link>
+                  {/* <a href="#">
                     <span className="sr-only">Workflow</span>
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
-                      alt=""
-                    />
-                  </a>
+                  </a> */}
                 </div>
 
                 <div className="hidden h-full lg:flex">
@@ -259,14 +264,16 @@ function Header() {
                 </div>
 
                 {/* Logo (lg-) */}
-                <a href="#" className="lg:hidden">
-                  <span className="sr-only">Workflow</span>
-                  <img
-                    src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
-                    alt=""
-                    className="h-8 w-auto"
-                  />
-                </a>
+                <Link href="/" className="lg:hidden">
+                  <a className="lg:hidden">
+                    <img
+                      className="h-8 w-auto"
+                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
+                      alt=""
+                    />
+                  </a>
+                </Link>
+             
 
                 <div className="flex flex-1 items-center justify-end">
                   <div
