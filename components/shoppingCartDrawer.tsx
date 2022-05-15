@@ -2,6 +2,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import { Fragment } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { CartItem, Product } from 'types'
 import Dropdown from './dropdown'
 
@@ -79,7 +80,10 @@ type props = {
   setOpen: (open: boolean) => void
 }
 
+
 export default function ShoppingCartDrawer({ open, setOpen }: props) {
+   const cartItems: CartItem[] = useSelector((state: any) => state.cartItems)
+  console.log(cartItems)
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>

@@ -1,9 +1,12 @@
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, ShoppingBagIcon } from '@heroicons/react/outline'
 import { classNames } from 'lib'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import Drawer from './drawer'
 import ShoppingCartDrawer from './shoppingCartDrawer'
+import { CartItem, Product } from 'types'
+
 const navigation = {
   categories: [
     {
@@ -87,9 +90,24 @@ const navigation = {
 }
 
 function Header() {
+  const cartItems: CartItem[] = useSelector((state: any) => state.cart)
+  let badgeCount = 0
+  useEffect(() => {
+    if (cartItems) {
+      badgeCount = cartItems.reduce((accumulator, object) => {
+        return accumulator + object.quantity
+      }, 0)
+    }
+    console.log(badgeCount)
+    console.log(JSON.stringify(cartItems))
+  }, [cartItems])
+
   const [open, setOpen] = useState(false)
   const [openShoppingCart, setOpenShoppingCart] = useState(false)
-
+  console.log(badgeCount)
+  if (cartItems) {
+    console.log(JSON.stringify(cartItems))
+  }
   return (
     <>
       <Drawer open={open} setOpen={setOpen} />
@@ -263,7 +281,7 @@ function Header() {
                           aria-hidden="true"
                         />
                         <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                          0
+                          {badgeCount}
                         </span>
                         <span className="sr-only">items in cart, view bag</span>
                       </a>

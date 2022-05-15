@@ -108,9 +108,9 @@ export default function ProductPage() {
   const cart= useSelector((state:any) => state.app.cart)
   const router = useRouter()
   const { slug } = router.query
-  if (!slug) {
-    return <div> waiting for slug.. </div>
-  }
+  // if (!slug) {
+  //   return <div> waiting for slug.. </div>
+  // }
   const { data, error } = useSWR('/api/' + slug, fetcher)
   if (!data) {
     return <div> waiting for data</div>

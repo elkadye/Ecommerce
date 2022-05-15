@@ -23,6 +23,8 @@ export const appSlice = createSlice({
     changeCartQty(state, { payload }: { payload: CartItem }) {
       if(state.cart.length<1){
         state.cart.push(payload)
+        console.log("first")
+        console.log(JSON.stringify(state.cart))
       }else{
         const item=state.cart.find((item)=>item.slug==payload.slug)
         if(!item){
@@ -31,9 +33,11 @@ export const appSlice = createSlice({
           item.quantity+=payload.quantity
           if(item.quantity<1){
            state.cart= state.cart.filter((i) => i.slug !== item.slug)
+           console.log('push')
           }
         }
       }
+      console.log(JSON.stringify(state.cart))
     },
   },
 })
