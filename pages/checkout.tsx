@@ -42,9 +42,9 @@ const deliveryMethods = [
     id: 1,
     title: 'Standard',
     turnaround: '4–10 business days',
-    price: '$5.00',
+    price: 5,
   },
-  { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
+  { id: 2, title: 'Express', turnaround: '2–5 business days', price: 16 },
 ]
 const paymentMethods = [
   { id: 'credit-card', title: 'Credit card' },
@@ -53,24 +53,25 @@ const paymentMethods = [
 ]
 
 export default function Example() {
-    const cart: CartItem[] = useSelector((state: any) => state.app.cart)
-    const dispatch = useDispatch()
+  const cart: CartItem[] = useSelector((state: any) => state.app.cart)
+  const dispatch = useDispatch()
+  const cartSubTotal = cart.reduce((accumulator, object) => {
+    return accumulator + +object.quantity * +object.product_variant[0].price
+  }, 0)
 
-    const cartSubTotal = cart.reduce((accumulator, object) => {
-      return accumulator + +object.quantity * +object.product_variant[0].price
-    }, 0)
-    console.log(JSON.stringify(cart))
-    
-
-    function setItemQty(product: CartItem) {
-      console.log(product)
-      dispatch(setCartItemQty(product))
-    }
+  function setItemQty(product: CartItem) {
+    console.log(product)
+    dispatch(setCartItemQty(product))
+  }
   const [open, setOpen] = useState(false)
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     deliveryMethods[0]
   )
+  const taxRate = 0.1
+  const taxAmount = (cartSubTotal + selectedDeliveryMethod.price) * taxRate
 
+
+  
   return (
     <Layout>
       <div className="bg-gray-50">
@@ -573,19 +574,22 @@ export default function Example() {
                     <div className="flex items-center justify-between">
                       <dt className="text-sm">Shipping</dt>
                       <dd className="text-sm font-medium text-gray-900">
-                        $5.00
+                        EGP {selectedDeliveryMethod.price}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between">
                       <dt className="text-sm">Taxes</dt>
                       <dd className="text-sm font-medium text-gray-900">
-                        $5.52
+                        EGP {taxAmount}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                       <dt className="text-base font-medium">Total</dt>
                       <dd className="text-base font-medium text-gray-900">
-                        $75.52
+                        EGP{' '}
+                        {cartSubTotal +
+                          selectedDeliveryMethod.price +
+                          taxAmount}
                       </dd>
                     </div>
                   </dl>
