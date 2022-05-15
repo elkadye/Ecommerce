@@ -4,8 +4,13 @@ import Dropdown from 'components/dropdown'
 import Layout from 'components/layout'
 import { classNames } from 'lib'
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { CartItem, Product } from 'types'
+import { useEffect } from 'react'
+import Link from 'next/link'
+import { removeCartItem, setCartItemQty } from '../redux/reducers/app'
 
-const products = [
+const staticproducts = [
   {
     id: 1,
     title: 'Basic Tee',
@@ -48,6 +53,19 @@ const paymentMethods = [
 ]
 
 export default function Example() {
+    const cart: CartItem[] = useSelector((state: any) => state.app.cart)
+    const dispatch = useDispatch()
+
+    const cartSubTotal = cart.reduce((accumulator, object) => {
+      return accumulator + +object.quantity * +object.product_variant[0].price
+    }, 0)
+    console.log(JSON.stringify(cart))
+    
+
+    function setItemQty(product: CartItem) {
+      console.log(product)
+      dispatch(setCartItemQty(product))
+    }
   const [open, setOpen] = useState(false)
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     deliveryMethods[0]
@@ -472,12 +490,12 @@ export default function Example() {
                 <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
                   <h3 className="sr-only">Items in your cart</h3>
                   <ul role="list" className="divide-y divide-gray-200">
-                    {products.map((product) => (
+                    {cart.map((product) => (
                       <li key={product.id} className="flex py-6 px-4 sm:px-6">
                         <div className="flex-shrink-0">
                           <img
-                            src={product.imageSrc}
-                            alt={product.imageAlt}
+                            src={product.product_images[0].imageSrc}
+                            alt={product.product_images[0].imageAlt}
                             className="w-20 rounded-md"
                           />
                         </div>
@@ -486,18 +504,17 @@ export default function Example() {
                           <div className="flex">
                             <div className="min-w-0 flex-1">
                               <h4 className="text-sm">
-                                <a
-                                  href={product.href}
-                                  className="font-medium text-gray-700 hover:text-gray-800"
-                                >
-                                  {product.title}
-                                </a>
+                                <Link href={'/product/' + product.slug}>
+                                  <a onClick={() => setOpen(false)}>
+                                    {product.name}
+                                  </a>
+                                </Link>
                               </h4>
                               <p className="mt-1 text-sm text-gray-500">
-                                {product.color}
+                                {product.product_variant[0].color}
                               </p>
                               <p className="mt-1 text-sm text-gray-500">
-                                {product.size}
+                                {product.product_variant[0].size}
                               </p>
                             </div>
 
@@ -505,6 +522,9 @@ export default function Example() {
                               <button
                                 type="button"
                                 className="-m-2.5 flex items-center justify-center bg-white p-2.5 text-gray-400 hover:text-gray-500"
+                                onClick={() =>
+                                  dispatch(removeCartItem(product))
+                                }
                               >
                                 <span className="sr-only">Remove</span>
                                 <TrashIcon
@@ -517,7 +537,7 @@ export default function Example() {
 
                           <div className="flex flex-1 items-end justify-between pt-2">
                             <p className="mt-1 text-sm font-medium text-gray-900">
-                              {product.price}
+                              {product.product_variant[0].price}
                             </p>
 
                             <div className="ml-4">
@@ -525,11 +545,15 @@ export default function Example() {
                                 Quantity
                               </label>
                               <Dropdown
-                                onChange={(value) => {
-                                  console.log('hello world' + value)
-                                }}
+                                defaultValue={+product.quantity}
+                                onChange={(quantity) =>
+                                  setItemQty({
+                                    ...product,
+                                    quantity: +quantity,
+                                  })
+                                }
                                 values={Array.from(
-                                  Array(product.availableQty),
+                                  Array(+product.product_variant[0].qty),
                                   (_, i) => i + 1
                                 )}
                               />
@@ -543,7 +567,7 @@ export default function Example() {
                     <div className="flex items-center justify-between">
                       <dt className="text-sm">Subtotal</dt>
                       <dd className="text-sm font-medium text-gray-900">
-                        $64.00
+                        {cartSubTotal}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between">
