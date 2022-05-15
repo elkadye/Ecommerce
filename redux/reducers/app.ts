@@ -40,13 +40,24 @@ export const appSlice = createSlice({
       console.log(JSON.stringify(state.cart))
     },
     removeCartItem(state, { payload }: { payload: CartItem }) {
-      state.cart = state.cart.filter((item)=>item.slug !== payload.slug)
-
+      state.cart = state.cart.filter((item) => item.slug !== payload.slug)
+    },
+    setCartItemQty(state, { payload }: { payload: CartItem }) {
+      const item = state.cart.find((item) => item.slug == payload.slug)
+      if (item) {
+        item.quantity = payload.quantity
+      }
     },
   },
 })
 
-export const { setProducts, setCategories, setCart, changeCartQty, removeCartItem } =
-  appSlice.actions
+export const {
+  setProducts,
+  setCategories,
+  setCart,
+  changeCartQty,
+  removeCartItem,
+  setCartItemQty,
+} = appSlice.actions
 
 export default appSlice.reducer

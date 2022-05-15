@@ -7,7 +7,7 @@ import { CartItem, Product } from 'types'
 import Dropdown from './dropdown'
 import { useEffect } from 'react'
 import Link from 'next/link'
-import {removeCartItem} from '../redux/reducers/app'
+import { removeCartItem, setCartItemQty } from '../redux/reducers/app'
 const staticcart: CartItem[] = [
   {
     id: 1,
@@ -84,7 +84,7 @@ type props = {
 
 export default function ShoppingCartDrawer({ open, setOpen }: props) {
   const cart: CartItem[] = useSelector((state: any) => state.app.cart)
-const dispatch= useDispatch()
+  const dispatch = useDispatch()
 
   const cartTotal = cart.reduce((accumulator, object) => {
     return accumulator + +object.quantity * +object.product_variant[0].price
@@ -92,6 +92,10 @@ const dispatch= useDispatch()
   console.log(JSON.stringify(cart))
   console.log(cartTotal)
 
+  function setItemQty (product:CartItem){
+console.log(product)
+    dispatch(setCartItemQty(product))
+  }
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -179,11 +183,17 @@ const dispatch= useDispatch()
                                   <div className="flex flex-1 items-end justify-between text-sm">
                                     <p className="text-gray-500">
                                       <Dropdown
-                                        onChange={() => {
-                                          console.log('hello world')
-                                        }}
+                                        defaultValue={+product.quantity}
+                                        onChange={(quantity) =>
+                                          setItemQty({
+                                            ...product,
+                                            quantity: +quantity,
+                                          })
+                                        }
                                         values={Array.from(
-                                          Array(product.product_variant[0].qty),
+                                          Array(
+                                            +product.product_variant[0].qty
+                                          ),
                                           (_, i) => i + 1
                                         )}
                                       />
@@ -193,7 +203,9 @@ const dispatch= useDispatch()
                                       <button
                                         type="button"
                                         className="font-medium text-indigo-600 hover:text-indigo-500"
-                                        onClick={()=>dispatch(removeCartItem(product))}
+                                        onClick={() =>
+                                          dispatch(removeCartItem(product))
+                                        }
                                       >
                                         Remove
                                       </button>
