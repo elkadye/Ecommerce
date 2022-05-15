@@ -3,6 +3,7 @@ import { StarIcon } from '@heroicons/react/solid'
 import { useState } from 'react'
 import Layout from 'components/layout'
 import { classNames } from 'lib'
+import {changeCartQty} from '../../redux/reducers/app'
 
 const oldProduct = {
   name: 'Basic Tee 6-Pack',
@@ -98,9 +99,13 @@ import { RootProduct } from 'types'
 
 import { useRouter } from 'next/router'
 
+import { useDispatch, useSelector } from 'react-redux'
+
 const fetcher = (url: string) => axios.get(url).then((res) => res.data)
 
 export default function ProductPage() {
+  const dispatch = useDispatch()
+  const cart= useSelector((state:any) => state.app.cart)
   const router = useRouter()
   const { slug } = router.query
   if (!slug) {
@@ -118,12 +123,14 @@ export default function ProductPage() {
   // const [selectedColor, setSelectedColor] = useState(product.colors[0])
   // const [selectedSize, setSelectedSize] = useState(product.sizes[2])
 function addCartItem(){
-  const changeQty=1
-  const payload= {
+  const quantity = 1
+  const payload = {
     ...product,
-    changeQty
+    quantity
   }
 console.log(payload)
+dispatch(changeCartQty(payload))
+console.log(cart)
 }
   return (
     <Layout>

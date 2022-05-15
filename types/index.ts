@@ -9,7 +9,7 @@ export interface Product {
   imageAlt: string
 }
 
-export interface CartItem extends Product {
+export interface CartItem extends RootProduct {
   quantity: number
 }
 
