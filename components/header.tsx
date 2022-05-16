@@ -99,12 +99,12 @@ function Header() {
         return accumulator + object.quantity
       }, 0))
     }
-    console.log(badgeCount)
+    
   }, [cartItems])
 
   const [open, setOpen] = useState(false)
   const [openShoppingCart, setOpenShoppingCart] = useState(false)
-  console.log(badgeCount)
+
   // if (cartItems) {
   //   console.log(JSON.stringify(cartItems))
   // }

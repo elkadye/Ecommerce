@@ -89,11 +89,10 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
   const cartTotal = cart.reduce((accumulator, object) => {
     return accumulator + +object.quantity * +object.product_variant[0].price
   }, 0)
-  console.log(JSON.stringify(cart))
-  console.log(cartTotal)
+  
 
   function setItemQty(product: CartItem) {
-    console.log(product)
+   
     dispatch(setCartItemQty(product))
   }
   return (

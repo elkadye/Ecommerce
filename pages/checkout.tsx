@@ -5,11 +5,13 @@ import Layout from 'components/layout'
 import { classNames } from 'lib'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CartItem, Order, Product } from 'types'
+import { CartItem, Product } from 'types'
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { removeCartItem, setCartItemQty } from '../redux/reducers/app'
 import { useFormik } from 'formik'
+import { useRouter } from 'next/router'
+
 const staticproducts = [
   {
     id: 1,
@@ -53,6 +55,7 @@ const paymentMethods = [
 ]
 
 export default function Example() {
+  const router = useRouter()
   const dispatch = useDispatch()
   const cart: CartItem[] = useSelector((state: any) => state.app.cart)
   const [open, setOpen] = useState(false)
@@ -101,12 +104,10 @@ export default function Example() {
         taxAmount: +item.product_variant[0].price * item.quantity * taxRate,
       }))
       const payload = {
-        order_details: {
-          ...values,
-          cartTotal,
-          taxAmount,
-          shipping: selectedDeliveryMethod.price,
-        },
+        ...values,
+        cartTotal,
+        taxAmount,
+        shipping: selectedDeliveryMethod.price,
         orderItems,
       }
 
@@ -122,8 +123,13 @@ export default function Example() {
         body: JSONdata,
       }
       const response = await fetch(endpoint, options)
-      const result = await response.json()
-      console.log(result)
+      const status= await response.status
+      if(status==201){
+        console.log("order added successfully")
+        router.push('/')
+
+      }else{
+      console.log(status)}
       // alert(`Is this your full name: ${result.data}`)
       // await fetch('/api/order',payload)
     },
@@ -560,12 +566,12 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
-                          value={formik.values.cvs}
+                          value={formik.values.cvc}
                           onChange={formik.handleChange}
                           type="text"
                           name="cvc"
                           id="cvc"
-                          autoComplete="csc"
+                          autoComplete="cvc"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         />
                       </div>

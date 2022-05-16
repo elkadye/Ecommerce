@@ -9,10 +9,6 @@ export interface Product {
   imageAlt: string
 }
 
-export interface CartItem extends RootProduct {
-  quantity: number
-}
-
 export type Category = {
   name: string
   featured: Product[]
@@ -108,8 +104,21 @@ export type Navigation = {
     product_images: ProductImage[]
     product_variant: ProductVariant[]
   }
+  
+export interface CartItem extends RootProduct {
+  quantity: number
+}
+export interface GCartItem extends CartItem {
+  cartTotal: string
+  taxAmount: number
+  shipping: string
+  variantID: string
+  price: string
+  orderQty:string
+}
 
 export interface Order {
+  id: string
   emailAddress: string
   firstName: string
   lastName: string
@@ -126,5 +135,5 @@ export interface Order {
   nameOnCard: string
   expirationDate: string
   cvc: string
-  orderItems: CartItem[]
+  orderItems: GCartItem[]
 }
