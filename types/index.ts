@@ -109,4 +109,22 @@ export type Navigation = {
     product_variant: ProductVariant[]
   }
 
-
+export interface Order {
+  emailAddress: string
+  firstName: string
+  lastName: string
+  company: string
+  address: string
+  apartment: string
+  city: string
+  country: string
+  region: string
+  postalCode: string
+  phone: string
+  paymentType: string
+  cardNumber: string
+  nameOnCard: string
+  expirationDate: string
+  cvc: string
+  orderItems: CartItem[]
+}

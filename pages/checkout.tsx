@@ -5,11 +5,11 @@ import Layout from 'components/layout'
 import { classNames } from 'lib'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CartItem, Product } from 'types'
+import { CartItem, Order, Product } from 'types'
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { removeCartItem, setCartItemQty } from '../redux/reducers/app'
-
+import { useFormik } from 'formik'
 const staticproducts = [
   {
     id: 1,
@@ -53,33 +53,77 @@ const paymentMethods = [
 ]
 
 export default function Example() {
-  const cart: CartItem[] = useSelector((state: any) => state.app.cart)
   const dispatch = useDispatch()
-  const cartSubTotal = cart.reduce((accumulator, object) => {
-    return accumulator + +object.quantity * +object.product_variant[0].price
-  }, 0)
-
-  function setItemQty(product: CartItem) {
-    console.log(product)
-    dispatch(setCartItemQty(product))
-  }
+  const cart: CartItem[] = useSelector((state: any) => state.app.cart)
   const [open, setOpen] = useState(false)
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     deliveryMethods[0]
   )
+
+  const cartSubTotal = cart.reduce((accumulator, object) => {
+    return accumulator + +object.quantity * +object.product_variant[0].price
+  }, 0)
   const taxRate = 0.1
   const taxAmount = (cartSubTotal + selectedDeliveryMethod.price) * taxRate
+  const cartTotal = cartSubTotal + selectedDeliveryMethod.price + taxAmount
+  function setItemQty(product: CartItem) {
+    console.log(product)
+    dispatch(setCartItemQty(product))
+  }
 
+  const formik = useFormik({
+    initialValues: {
+      emailAddress: '',
+      firstName: '',
+      lastName: '',
+      company: '',
+      address: '',
+      apartment: '',
+      city: '',
+      country: '',
+      region: '',
+      postalCode: '',
+      phone: '',
+      paymentType: '',
+      cardNumber: '',
+      nameOnCard: '',
+      expirationDate: '',
+      cvc: '',
+    },
+    onSubmit: async (values) => {
+      const orderItems = cart.map((item) => ({
+        id: item.id,
+        name: item.name,
+        slug: item.slug,
+        variantID: item.product_variant[0].id,
+        price: item.product_variant[0].price,
+        orderQty: item.quantity,
+        taxAmount: +item.product_variant[0].price * item.quantity * taxRate,
+      }))
+      const payload = {
+        order_details: {
+          ...values,
+          cartTotal,
+          taxAmount,
+          shipping: selectedDeliveryMethod.price,
+        },
+        orderItems,
+      }
+      console.log(payload)
+      // await fetch('/api/order',payload)
+    },
+  })
 
-  
   return (
     <Layout>
       <div className="bg-gray-50">
         <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:max-w-none">
             <h1 className="sr-only">Checkout</h1>
-
-            <form className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+            <form
+              onSubmit={formik.handleSubmit}
+              className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
+            >
               <div>
                 <div>
                   <h2 className="text-lg font-medium text-gray-900">
@@ -88,16 +132,18 @@ export default function Example() {
 
                   <div className="mt-4">
                     <label
-                      htmlFor="email-address"
+                      htmlFor="emailAddress"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Email address
                     </label>
                     <div className="mt-1">
                       <input
+                        value={formik.values.emailAddress}
+                        onChange={formik.handleChange}
                         type="email"
-                        id="email-address"
-                        name="email-address"
+                        id="emailAddress"
+                        name="emailAddress"
                         autoComplete="email"
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
@@ -113,16 +159,18 @@ export default function Example() {
                   <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                     <div>
                       <label
-                        htmlFor="first-name"
+                        htmlFor="firstName"
                         className="block text-sm font-medium text-gray-700"
                       >
                         First name
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.firstName}
+                          onChange={formik.handleChange}
                           type="text"
-                          id="first-name"
-                          name="first-name"
+                          id="firstName"
+                          name="firstName"
                           autoComplete="given-name"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         />
@@ -131,16 +179,18 @@ export default function Example() {
 
                     <div>
                       <label
-                        htmlFor="last-name"
+                        htmlFor="lastName"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Last name
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.lastName}
+                          onChange={formik.handleChange}
                           type="text"
-                          id="last-name"
-                          name="last-name"
+                          id="lastName"
+                          name="lastName"
                           autoComplete="family-name"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         />
@@ -156,6 +206,8 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.company}
+                          onChange={formik.handleChange}
                           type="text"
                           name="company"
                           id="company"
@@ -173,6 +225,8 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.address}
+                          onChange={formik.handleChange}
                           type="text"
                           name="address"
                           id="address"
@@ -191,6 +245,8 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.apartment}
+                          onChange={formik.handleChange}
                           type="text"
                           name="apartment"
                           id="apartment"
@@ -208,6 +264,8 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.city}
+                          onChange={formik.handleChange}
                           type="text"
                           name="city"
                           id="city"
@@ -226,11 +284,14 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <select
+                          value={formik.values.country}
+                          onChange={formik.handleChange}
                           id="country"
                           name="country"
                           autoComplete="country-name"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         >
+                          <option>Egypt</option>
                           <option>United States</option>
                           <option>Canada</option>
                           <option>Mexico</option>
@@ -247,6 +308,8 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.region}
+                          onChange={formik.handleChange}
                           type="text"
                           name="region"
                           id="region"
@@ -258,17 +321,19 @@ export default function Example() {
 
                     <div>
                       <label
-                        htmlFor="postal-code"
+                        htmlFor="postalCode"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Postal code
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.postalCode}
+                          onChange={formik.handleChange}
                           type="text"
-                          name="postal-code"
-                          id="postal-code"
-                          autoComplete="postal-code"
+                          name="postalCode"
+                          id="postalCode"
+                          autoComplete="postalCode"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         />
                       </div>
@@ -283,6 +348,8 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.phone}
+                          onChange={formik.handleChange}
                           type="text"
                           name="phone"
                           id="phone"
@@ -381,15 +448,17 @@ export default function Example() {
                           {paymentMethodIdx === 0 ? (
                             <input
                               id={paymentMethod.id}
-                              name="payment-type"
+                              name="paymentType"
                               type="radio"
                               defaultChecked
                               className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
                           ) : (
                             <input
+                              value={formik.values.paymentType}
+                              onChange={formik.handleChange}
                               id={paymentMethod.id}
-                              name="payment-type"
+                              name="paymentType"
                               type="radio"
                               className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
@@ -409,16 +478,18 @@ export default function Example() {
                   <div className="mt-6 grid grid-cols-4 gap-y-6 gap-x-4">
                     <div className="col-span-4">
                       <label
-                        htmlFor="card-number"
+                        htmlFor="cardNumber"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Card number
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.cardNumber}
+                          onChange={formik.handleChange}
                           type="text"
-                          id="card-number"
-                          name="card-number"
+                          id="cardNumber"
+                          name="cardNumber"
                           autoComplete="cc-number"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         />
@@ -427,16 +498,18 @@ export default function Example() {
 
                     <div className="col-span-4">
                       <label
-                        htmlFor="name-on-card"
+                        htmlFor="nameOnCard"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Name on card
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.nameOnCard}
+                          onChange={formik.handleChange}
                           type="text"
-                          id="name-on-card"
-                          name="name-on-card"
+                          id="nameOnCard"
+                          name="nameOnCard"
                           autoComplete="cc-name"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         />
@@ -445,16 +518,18 @@ export default function Example() {
 
                     <div className="col-span-3">
                       <label
-                        htmlFor="expiration-date"
+                        htmlFor="expirationDate"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Expiration date (MM/YY)
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.expirationDate}
+                          onChange={formik.handleChange}
                           type="text"
-                          name="expiration-date"
-                          id="expiration-date"
+                          name="expirationDate"
+                          id="expirationDate"
                           autoComplete="cc-exp"
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         />
@@ -470,6 +545,8 @@ export default function Example() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.cvs}
+                          onChange={formik.handleChange}
                           type="text"
                           name="cvc"
                           id="cvc"
@@ -586,10 +663,7 @@ export default function Example() {
                     <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                       <dt className="text-base font-medium">Total</dt>
                       <dd className="text-base font-medium text-gray-900">
-                        EGP{' '}
-                        {cartSubTotal +
-                          selectedDeliveryMethod.price +
-                          taxAmount}
+                        EGP {cartTotal}
                       </dd>
                     </div>
                   </dl>
