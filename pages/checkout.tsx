@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { removeCartItem, setCartItemQty } from '../redux/reducers/app'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
+import { RootState } from 'redux/store'
 
 const staticproducts = [
   {
@@ -57,7 +58,7 @@ const paymentMethods = [
 export default function Example() {
   const router = useRouter()
   const dispatch = useDispatch()
-  const cart: CartItem[] = useSelector((state: any) => state.app.cart)
+  const cart: CartItem[] = useSelector((state: RootState) => state.app.cart)
   const [open, setOpen] = useState(false)
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     deliveryMethods[0]

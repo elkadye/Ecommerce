@@ -8,6 +8,7 @@ import Dropdown from './dropdown'
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { removeCartItem, setCartItemQty } from '../redux/reducers/app'
+import { RootState } from 'redux/store'
 const staticcart: CartItem[] = [
   {
     id: 1,
@@ -83,7 +84,7 @@ type props = {
 }
 
 export default function ShoppingCartDrawer({ open, setOpen }: props) {
-  const cart: CartItem[] = useSelector((state: any) => state.app.cart)
+  const cart: CartItem[] = useSelector((state: RootState) => state.app.cart)
   const dispatch = useDispatch()
 
   const cartTotal = cart.reduce((accumulator, object) => {

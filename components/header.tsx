@@ -7,6 +7,7 @@ import Drawer from './drawer'
 import ShoppingCartDrawer from './shoppingCartDrawer'
 import { CartItem, Product } from 'types'
 import Link from 'next/link'
+import { RootState } from 'redux/store'
 
 const navigation = {
   categories: [
@@ -91,7 +92,9 @@ const navigation = {
 }
 
 function Header() {
-  const cartItems: CartItem[] = useSelector((state: any) => state.app.cart)
+  const cartItems: CartItem[] = useSelector(
+    (state: RootState) => state.app.cart
+  )
   const [badgeCount, setBadgeCount] = useState(0)
   useEffect(() => {
     if (cartItems) {

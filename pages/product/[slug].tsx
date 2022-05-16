@@ -100,12 +100,13 @@ import { RootProduct } from 'types'
 import { useRouter } from 'next/router'
 
 import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'redux/store'
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data)
 
 export default function ProductPage() {
   const dispatch = useDispatch()
-  const cart= useSelector((state:any) => state.app.cart)
+  const cart = useSelector((state: RootState) => state.app.cart)
   const router = useRouter()
   const { slug } = router.query
   // if (!slug) {
