@@ -109,7 +109,22 @@ export default function Example() {
         },
         orderItems,
       }
+
       console.log(payload)
+
+      const JSONdata = JSON.stringify(payload)
+      const endpoint = '/api/order'
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSONdata,
+      }
+      const response = await fetch(endpoint, options)
+      const result = await response.json()
+      console.log(result)
+      // alert(`Is this your full name: ${result.data}`)
       // await fetch('/api/order',payload)
     },
   })
