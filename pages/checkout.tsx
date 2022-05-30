@@ -127,6 +127,7 @@ export default function Example() {
       const status= await response.status
       if(status==201){
         console.log("order added successfully")
+        alert("order Placed. Thank you")
         router.push('/')
 
       }else{

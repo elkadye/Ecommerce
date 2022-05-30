@@ -79,6 +79,11 @@ const Home: NextPage = () => {
   console.log(data)
   // const trendingProducts=data.filter((product:RootProduct)=> product.trending)
   // console.log(trendingProducts)
+  if (!data){
+    return (
+      <h1>loading</h1>
+    )
+  }
   return (
     <div className="">
       <Layout>
@@ -144,41 +149,45 @@ const Home: NextPage = () => {
                 Collections
               </h2>
               <div className="mx-auto grid max-w-md grid-cols-1 gap-y-6 px-4 sm:max-w-7xl sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 sm:px-6 lg:gap-x-8 lg:px-8">
-                {collections.map((collection) => (
-                  <div
-                    key={collection.name}
-                    className="group relative h-96 rounded-lg bg-white shadow-xl sm:aspect-w-4 sm:aspect-h-5 sm:h-auto"
-                  >
-                    <div>
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-0 overflow-hidden rounded-lg"
-                      >
-                        <div className="absolute inset-0 overflow-hidden group-hover:opacity-75">
-                          <img
-                            src={collection.imageSrc}
-                            alt={collection.imageAlt}
-                            className="h-full w-full object-cover object-center"
-                          />
+                {data
+                  ?.filter((product: RootProduct) => product.trending)
+                  .map((product: RootProduct) => (
+                    <div
+                      key={product.id}
+                      className="group relative h-96 rounded-lg bg-white shadow-xl sm:aspect-w-4 sm:aspect-h-5 sm:h-auto"
+                    >
+                      <div>
+                        <div
+                          aria-hidden="true"
+                          className="absolute inset-0 overflow-hidden rounded-lg"
+                        >
+                          <div className="absolute inset-0 overflow-hidden group-hover:opacity-75">
+                            <img
+                              src={product.product_images[0].imageSrc}
+                              alt={product.product_images[0].imageAlt}
+                              className="h-full w-full object-cover object-center"
+                            />
+                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50" />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50" />
-                      </div>
-                      <div className="absolute inset-0 flex items-end rounded-lg p-6">
-                        <div>
-                          <p aria-hidden="true" className="text-sm text-white">
-                            Shop the collection
-                          </p>
-                          <h3 className="mt-1 font-semibold text-white">
-                            <a href={collection.href}>
-                              <span className="absolute inset-0" />
-                              {collection.name}
-                            </a>
-                          </h3>
+                        <div className="absolute inset-0 flex items-end rounded-lg p-6">
+                          <div>
+                            <p
+                              aria-hidden="true"
+                              className="text-sm text-white"
+                            >
+                              Shop the collection
+                            </p>
+                            <h3 className="mt-1 font-semibold text-white">
+                              <Link href={'/product/' + product.slug}>
+                                <a>{product.name}</a>
+                              </Link>
+                            </h3>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </section>
           </div>
@@ -201,9 +210,7 @@ const Home: NextPage = () => {
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
-                {data
-                  ?.filter((product: RootProduct) => product.trending)
-                  .map((product: RootProduct) => (
+                {data?.map((product: RootProduct) => (
                     <div key={product.id} className="group relative">
                       <div className="h-56 w-full overflow-hidden rounded-md group-hover:opacity-75 lg:h-72 xl:h-80">
                         <img
@@ -213,7 +220,7 @@ const Home: NextPage = () => {
                         />
                       </div>
                       <h3 className="mt-4 text-sm text-gray-700">
-                        <Link href={'/product/'+ product.slug}>
+                        <Link href={'/product/' + product.slug}>
                           <a>{product.name}</a>
                         </Link>
                       </h3>

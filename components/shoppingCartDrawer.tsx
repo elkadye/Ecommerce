@@ -90,10 +90,8 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
   const cartTotal = cart.reduce((accumulator, object) => {
     return accumulator + +object.quantity * +object.product_variant[0].price
   }, 0)
-  
 
   function setItemQty(product: CartItem) {
-   
     dispatch(setCartItemQty(product))
   }
   return (
@@ -266,3 +264,5 @@ export default function ShoppingCartDrawer({ open, setOpen }: props) {
     </Transition.Root>
   )
 }
+
+

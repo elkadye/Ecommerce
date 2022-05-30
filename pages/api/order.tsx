@@ -25,7 +25,17 @@ export default async function handler(
       auth,
       version: 'v4',
     })
-    const id = 123
+    const orderID = () =>{
+      var result = ''
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      var charactersLength = characters.length
+      for (var i = 0; i < 10; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        )
+      }
+      return result
+    }
     // TODO: change ID to uuid
 
     const order = await sheets.spreadsheets.values.append({
@@ -35,7 +45,7 @@ export default async function handler(
       requestBody: {
         values: [
           [
-            id,
+            orderID,
             body.emailAddress,
             body.firstName,
             body.lastName,
@@ -62,7 +72,7 @@ export default async function handler(
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: body.orderItems.map((item) => [
-          id,
+          orderID,
           item.id,
           item.name,
           item.slug,

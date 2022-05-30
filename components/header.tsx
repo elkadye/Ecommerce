@@ -129,7 +129,6 @@ function Header() {
                 <div className="hidden lg:flex lg:flex-1 lg:items-center">
                   <Link href="/">
                     <a>
-                      ttt
                       <img
                         className="h-8 w-auto"
                         src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
